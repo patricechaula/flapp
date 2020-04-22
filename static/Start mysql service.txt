@@ -1,0 +1,11 @@
+Start mysql service
+connect to mysql
+create database and tables if not exist
+let the fun begin
+
+C:\> "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqladmin"
+          -u root shutdown
+
+C:\xampp\mysql\bin\mysqladmin -u root shutdown
+
+C:\xampp\mysql\bin\mysqld --install

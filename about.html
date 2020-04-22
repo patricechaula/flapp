@@ -1,0 +1,35 @@
+<html>
+    <head>
+        <title>About</title>
+        <style>
+            .container{
+                width: 80%;
+                margin: auto;
+                text-align: center;
+                margin-top: 20px;
+                line-height: 1.5em;
+                font-size: 16px;
+                font-family: 'Nunito', sans-serif;
+            }
+
+            .container img{
+                width: 100%;
+            }
+            #copyright{
+                color: rgb(61, 60, 60);
+                
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <img src="static/summerplace.jpg"/>
+            <p>Fertiliser and Lime Recommendations by Summerplace Natural Resources PL</p>
+            <p id="copyright"></p>
+        </div>
+        <script>
+            let copyRightText = document.querySelector('#copyright');
+            copyRightText.innerHTML = `All rights reserved &copy; ${new Date().getFullYear()}`;
+        </script>
+    </body>
+</html>

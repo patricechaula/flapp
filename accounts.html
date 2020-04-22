@@ -1,0 +1,88 @@
+<html>
+
+<head>
+    <title>Manage accounts</title>
+    <link type="text/css" rel="stylesheet" href="static/materialize.css" media="screen,projection" />
+    <style>
+        h3 {
+            background: linear-gradient(#ddd, rgb(240, 235, 235), #ddd);
+            color: teal;
+            padding: 10px;
+            text-align: center;
+        }
+
+        #container {
+            width: 80%;
+            margin: auto;
+        }
+
+        label,
+        .btn {
+            display: block;
+        }
+
+        .btn {
+            width: 100%;
+        }
+
+        #indicate-disabled {
+            display: inline-block;
+            padding: 3px 10px;
+            background-color: rgb(167, 165, 165);
+        }
+
+        #indicate-enabled {
+            display: inline-block;
+            padding: 3px 10px;
+
+        }
+
+        #toggle {
+            border: rgb(167, 165, 165) 2px solid;
+            width: fit-content;
+            display: inline-block;
+            border-radius: 3px;
+            cursor: pointer;
+
+
+        }
+
+        .toggle-switch {}
+
+        #toggle-text {
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="users-table">
+            <h3>Manage Users</h3>
+            <table>
+                <tr>
+                    <td>Username</td>
+                    <td>First name</td>
+                    <td>Last name</td>
+                    <td>Action</td>
+                </tr>
+
+            </table>
+        </div>
+        <div id="individual-user">
+            <h3 id="username"></h3>
+            <div id="user-details">
+               <div>
+                <p id="fullname">
+                </p>
+                <p id="permissions"></p>
+               </div>
+            
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="static/materialize.js"></script>
+    <script src="static/manageusers.js"></script>
+</body>
+
+</html>

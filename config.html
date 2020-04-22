@@ -1,0 +1,161 @@
+<html>
+
+<head>
+    <title>Connect to database</title>
+    <link type="text/css" rel="stylesheet" href="static/materialize.css" media="screen,projection" />
+    <style>
+        h3 {
+            background: linear-gradient(#ddd, rgb(240, 235, 235), #ddd);
+            background: #ddd;
+            color: teal;
+            padding: 10px;
+            text-align: center;
+        }
+
+        #container {
+            width: 80%;
+            margin: auto;
+        }
+
+        label,
+        .btn {
+            display: block;
+        }
+
+        .btn {
+            width: 100%;
+        }
+
+        #indicate-disabled {
+            display: inline-block;
+            padding: 3px 10px;
+            background: linear-gradient(#888, rgb(240, 235, 235), #888);
+        }
+
+        #indicate-enabled {
+            display: inline-block;
+            padding: 3px 10px;
+
+        }
+
+        .btn{
+            display: block;
+            margin: 10px 0;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <h3>Connect</h3>
+
+        <form id="config-form">
+            <p>Toggle switch to edit host, port and username.</p>
+            <div class="switch">
+                <label>
+                  Off
+                  <input type="checkbox" id="toggle">
+                  <span class="lever"></span>
+                  On
+                </label>
+              </div>
+            <input type="text" id="host" required placeholder="Host IP Address"  readonly=true/>
+            <label for="host">Host IP Address</label>
+            <input type="number" id="port" required placeholder="Port number" readonly=true />
+            <label for="port">Port number</label>
+            <input type="text" id="username" required placeholder="Username" readonly=true />
+            <label for="username">Username</label>
+            <input type="password" id="password" placeholder="Password" />
+            <label for="password">Password</label>
+            <button class="btn" id="connect-btn">Connect</button>
+        </form>
+    </div>
+    <script type="text/javascript" src="static/materialize.js"></script>
+    <script>
+        const electron = require('electron');
+        const { dialog } = require('electron').remote;
+        const remote = electron.remote;
+        const ipc = electron.ipcRenderer;
+        let editable = false;
+        document.addEventListener('DOMContentLoaded', function () {
+            ipc.send('get-defaults');
+            let toggleSwitch = document.querySelector('#toggle');
+            toggleSwitch.addEventListener('change', function(event){
+                if(!editable){
+                    
+                    document.querySelector('#host').readOnly = false;
+                    document.querySelector('#port').readOnly = false;
+                    document.querySelector('#username').readOnly = false;
+                    editable = true;
+                    
+                } else{
+                    document.querySelector('#host').readOnly = true;
+                    document.querySelector('#port').readOnly = true;
+                    document.querySelector('#username').readOnly = true;
+                    editable = false;
+                    
+                    
+                }
+            })
+            
+        })
+        ipc.on('receive-defaults', (event, data) => {
+
+            document.querySelector('#host').value = data.config.host;
+            document.querySelector('#username').value = data.config.user;
+            document.querySelector('#port').value = data.config.port;
+        })
+        let configurationForm = document.querySelector('#config-form');
+        configurationForm.onsubmit = saveConfiguration;
+
+        function saveConfiguration(event) {
+            event.preventDefault();
+            let hostName = document.querySelector('#host').value;
+            let userName = document.querySelector('#username').value;
+            let password = document.querySelector('#password').value;
+            let portNumber = parseInt(document.querySelector('#port').value);
+            let configData = {
+                config: {
+                    host: hostName,
+                    user: userName,
+                    password: password,
+                    port: portNumber
+                },
+                configured: true
+            }
+            ipc.send('save-config', configData);
+
+        }
+        let options = {
+            type: "info",
+            title: "",
+            message: "",
+            detail: "",
+        }
+        ipc.on('connect-error', (event, errno)=>{
+            switch(errno){
+                case 1045:
+                    options.title = "Login failed.";
+                    options.message = "Login failed. Please provide correct username and password.";
+                    dialog.showMessageBox(remote.getCurrentWindow(), options);
+                    break;
+                default:
+                    if(errno === "ECONNREFUSED")
+                       {
+                           options.title = "Connection failed.";
+                           options.message = "Failed to connect to the database.";
+                           options.detail = "Problem might be the server is down, incorrect configuration"
+                           + " or something else thats prevent you to connect. Please contact the administrator for assistance.";
+                           dialog.showMessageBox(remote.getCurrentWindow(), options);
+                       }
+                       break;
+            }
+        })
+        ipc.on('connected', () => {
+            window.close();
+        })
+    </script>
+</body>
+
+</html>
